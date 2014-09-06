@@ -41,3 +41,8 @@ C-j [       コピーモードに入る
 Space       コピーの始点を選ぶ
 Return      コピーの終点を選ぶ
 C-j ]       貼り付ける
+
+■etc
+C-j h       Help
+C-j :       Command Prompt
+
