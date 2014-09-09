@@ -8,7 +8,7 @@ tmux new-session   新規セッションを開始する
 
 tmux list-client   クライアント一覧を表示
 
-■でタッチ
+■デタッチ
 C-j d       デタッチする
 
 ■ウィンドウ操作
@@ -43,6 +43,5 @@ Return      コピーの終点を選ぶ
 C-j ]       貼り付ける
 
 ■etc
-C-j h       Help
+C-j ?       キーバインド確認
 C-j :       Command Prompt
-
