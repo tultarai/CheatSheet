@@ -1,0 +1,61 @@
+■EC2起動
+Ubuntuを新規Instanceで起動する
+PrivateKeyを保存しておく (例: ~/key/lion_primary.pem)
+
+■ログイン
+ssh -i ~/key/lion_primary.pem ubuntu@xx.xx.xx.xx
+
+■update
+sudo apt-get update
+sudo apt-get upgrade
+sudo apt-get dist-upgrade
+
+■zshインストール
+sudo apt-get install zsh
+
+■SSH Key作成
+ssh-keygen -t rsa
+→すべての質問にEnterのみで答える
+  ~/.ssh以下にid_rsa.pubが生成される
+
+■githubにid_rsa.pubを登録
+githubにログインする
+Settings -> SSH Keys で Add SSH Key を選択し、~/.ssh/id_rsa.pubの中身をコピーする
+
+試しに接続
+ssh -T git@github.com
+とやり、
+Hi username! You've successfully authenticated, but GitHub does not provide shell access.
+と表示されれば設定完了
+
+■githubからファイル取得(お試し)
+mkdir ~/work
+cd ~/work
+git clone git@github.com:tultarai/test.git
+
+■githubからファイル取得(CheatSheet)
+cd ~/work
+git clone git@github.com:tultarai/CheatSheet.git
+
+■githubからファイル取得(dotfile)
+cd ~/
+git clone git@github.com:tultarai/dotfiles.git
+
+ln -s dotfiles/.zshrc .zshrc
+ln -s dotfiles/.vimrc .vimrc
+
+■NeoBundle取得
+git clone https://github.com/Shougo/neobundle.vim ~/.vim/bundle/neobundle.vim
+
+■vimプラグイン取得
+vim  →エラーが出るが気にしない
+:NeoBundleUpdate
+:q!
+vim
+
+■その他モジュールインストール
+sudo apt-get install exuberant-ctags
+
+■git config
+git config --global user.name "Your Name"
+git config --global user.email you@example.com
