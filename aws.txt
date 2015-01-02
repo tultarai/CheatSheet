@@ -10,6 +10,15 @@ sudo apt-get update
 sudo apt-get upgrade
 sudo apt-get dist-upgrade
 
+■locale生成
+export LANGUAGE=ja_JP.utf8
+export LANG=ja_JP.utf8
+export LC_ALL=ja_JP.utf8
+sudo -i
+locale-gen ja_JP.utf8
+dpkg-reconfigure locales
+exit
+
 ■zshインストール
 sudo apt-get install zsh
 
