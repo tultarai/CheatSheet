@@ -49,9 +49,12 @@ git clone git@github.com:tultarai/CheatSheet.git
 ■githubからファイル取得(dotfile)
 cd ~/
 git clone git@github.com:tultarai/dotfiles.git
+(pushしないのなら git clone https://github.com/tultarai/dotfiles.git でも可)
 
 ln -s dotfiles/.zshrc .zshrc
 ln -s dotfiles/.vimrc .vimrc
+
+chsh -> /bin/zsh
 
 ■NeoBundle取得
 git clone https://github.com/Shougo/neobundle.vim ~/.vim/bundle/neobundle.vim
@@ -68,3 +71,9 @@ sudo apt-get install exuberant-ctags
 ■git config
 git config --global user.name "Your Name"
 git config --global user.email you@example.com
+
+■cgi-binを有効にする
+sudo a2enmod cgi
+sudo service apache2 restart
+→/usr/lib/cgi-bin/ 以下に cgiファイル(*.cgi)を置いて、chmod 705すれば
+  http://xx.xx.xx.xx/cgi-bin/*.cgi で実行可能
