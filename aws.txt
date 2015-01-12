@@ -40,6 +40,15 @@ sudo apt-get install ntp
 ntpq -p
 でNTPの状態取得できる
 
+■unattended-upgradesの有効化
+unattended-upgradesはインストールされているはず
+sudo dpkg-reconfigure -plow unattended-upgrades
+→Yesを選択
+
+/etc/apt/apt.conf.d/50unattended-upgrades の
+Unattended-Upgrade::Automatic-Reboot "false";
+のコメントアウトを削除(有効化)する
+
 ■SSH Key作成
 ssh-keygen -t rsa
 →すべての質問にEnterのみで答える
