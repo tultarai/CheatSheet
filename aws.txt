@@ -22,6 +22,24 @@ exit
 ■zshインストール
 sudo apt-get install zsh
 
+■NTP設定
+sudo apt-get install ntp
+
+/etc/ntp.confの編集
+  server 0.ubuntu.pool.ntp.org
+  server 1.ubuntu.pool.ntp.org
+  server 2.ubuntu.pool.ntp.org
+  server 3.ubuntu.pool.ntp.org
+  server ntp.ubuntu.com
+  を削除(コメントアウト)
+
+  # NICT
+  pool ntp.nict.jp
+  を追加
+
+ntpq -p
+でNTPの状態取得できる
+
 ■SSH Key作成
 ssh-keygen -t rsa
 →すべての質問にEnterのみで答える
