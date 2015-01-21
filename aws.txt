@@ -5,6 +5,9 @@ PrivateKeyを保存しておく (例: ~/key/lion_primary.pem)
 ■ログイン
 ssh -i ~/key/lion_primary.pem ubuntu@xx.xx.xx.xx
 
+■userのpassword変更
+sudo passwd ubuntu
+
 ■update
 sudo apt-get update
 sudo apt-get upgrade
@@ -22,6 +25,9 @@ exit
 ■zshインストール
 sudo apt-get install zsh
 
+chsh
+→/bin/zsh
+
 ■NTP設定
 sudo apt-get install ntp
 
@@ -36,6 +42,9 @@ sudo apt-get install ntp
   # NICT
   pool ntp.nict.jp
   を追加
+
+NTPの再起動
+sudo service ntp restart
 
 ntpq -p
 でNTPの状態取得できる
