@@ -23,31 +23,10 @@ dpkg-reconfigure locales
 exit
 
 ■zshインストール
-sudo apt-get install zsh
+sudo apt-get install zsh zsh-doc
 
-chsh
-→/bin/zsh
-
-■NTP設定
-sudo apt-get install ntp
-
-/etc/ntp.confの編集
-  server 0.ubuntu.pool.ntp.org
-  server 1.ubuntu.pool.ntp.org
-  server 2.ubuntu.pool.ntp.org
-  server 3.ubuntu.pool.ntp.org
-  server ntp.ubuntu.com
-  を削除(コメントアウト)
-
-  # NICT
-  pool ntp.nict.jp
-  を追加
-
-NTPの再起動
-sudo service ntp restart
-
-ntpq -p
-でNTPの状態取得できる
+■gitインストール
+sudo apt-get install git-core
 
 ■unattended-upgradesの有効化
 unattended-upgradesはインストールされているはず
@@ -100,6 +79,27 @@ vim  →エラーが出るが気にしない
 :NeoBundleUpdate
 :q!
 vim
+
+■NTP設定
+sudo apt-get install ntp
+
+/etc/ntp.confの編集
+  server 0.ubuntu.pool.ntp.org
+  server 1.ubuntu.pool.ntp.org
+  server 2.ubuntu.pool.ntp.org
+  server 3.ubuntu.pool.ntp.org
+  server ntp.ubuntu.com
+  を削除(コメントアウト)
+
+  # NICT
+  pool ntp.nict.jp
+  を追加
+
+NTPの再起動
+sudo service ntp restart
+
+ntpq -p
+でNTPの状態取得できる
 
 ■その他モジュールインストール
 sudo apt-get install exuberant-ctags
