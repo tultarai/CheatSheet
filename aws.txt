@@ -113,3 +113,10 @@ sudo a2enmod cgi
 sudo service apache2 restart
 →/usr/lib/cgi-bin/ 以下に cgiファイル(*.cgi)を置いて、chmod 705すれば
   http://xx.xx.xx.xx/cgi-bin/*.cgi で実行可能
+
+■refe,rubydocのインストール
+sudo gem install refe2
+bitclust setup
+
+vim ~/.bitclust/config
+→:default_version: 1.9.3 に変更する
