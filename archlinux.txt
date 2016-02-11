@@ -1,0 +1,320 @@
+■VirtualBox環境にインストール
+
+loadkeys jp106
+
+-----
+以下のようにすると、sshdで接続して以降の設定が出来る
+passwd
+systemctl start sshd
+ip addr
+-----
+
+fdisk /dev/sda
+-> o
+-> n [return/return/return/return]
+-> w
+
+mkfs -t ext4 /dev/sda1
+
+mount /dev/sda1 /mnt
+
+vi /etc/pacman.d/mirrorlist
+-> Japanを上に持ってくる
+
+pacstrap /mnt base base-devel
+
+genfstab -U -p /mnt >> /mnt/etc/fstab
+
+arch-chroot /mnt /bin/bash
+
+vi /etc/locale.gen
+-> en_US.UTF-8 UTF-8
+   ja_JP.UTF-8 UTF-8
+   をコメントアウトする
+
+locale-gen
+
+echo LANG=en_US.UTF-8 > /etc/locale.conf
+export LANG=en_US.UTF-8
+
+loadkeys jp106
+
+vi /etc/vconsole.conf
+->
+KEYMAP=jp106
+
+ln -s /usr/share/zoneinfo/Asia/Tokyo /etc/localtime
+
+hwclock --systohc --localtime
+
+echo archlinux > /etc/hostname
+
+systemctl enable dhcpcd.service
+
+passwd
+
+pacman -S grub-bios
+grub-install --target=i386-pc --recheck /dev/sda
+cp /usr/share/locale/ja/LC_MESSAGES/grub.mo /boot/grub/locale/ja.mo
+# pacman -S os-prober
+grub-mkconfig -o /boot/grub/grub.cfg
+
+exit
+umount -R /mnt
+reboot
+
+■OVA作成以後
+
+useradd -m -g wheel arai
+passwd arai
+
+# visudo
+して、以下のコメントアウトを外す
+    Defaults env_keep += "HOME"
+    %wheel ALL=(ALL) ALL
+
+sudo pacman -S net-tools
+
+sudo pacman -S openssh
+sudo systemctl start sshd
+sudo systemctl enable sshd
+
+Xの導入
+sudo pacman -S xorg-server
+  →1) mesa-libgl を選択
+  →1) xf86-input-evdev を選択
+
+sudo pacman -S xorg-server-utils xorg-xinit xorg-xclock 
+sudo pacman -S xterm
+
+ドライバのインストール(仮想環境の場合はxf86-video-vesa)
+sudo pacman -S xf86-video-vesa
+
+Xfceのインストール
+sudo pacman -S xfce4 gamin
+→xfce4-mixer以外を選択
+
+--------------------------------------------
+sudo pacman -S xfce4-goodies
+をすると色々入ってしまうので以下のパッケージだけインストールする
+mousepad
+ristretto
+thunar-archive-plugin
+thunar-media-tags-plugin
+xfce4-artwork
+xfce4-cpufreq-plugin
+xfce4-cpugraph-plugin
+xfce4-datetime-plugin
+xfce4-diskperf-plugin
+xfce4-fsguard-plugin
+xfce4-genmon-plugin
+xfce4-screenshooter
+xfce4-systemload-plugin
+xfce4-taskmanager
+xfce4-verve-plugin
+xfce4-weather-plugin
+xfce4-whiskermenu-plugin
+xfce4-xkb-plugin
+--------------------------------------------
+
+・ディスプレイマネージャのインストールと自動起動の設定(root)
+sudo pacman -S slim slim-themes archlinux-themes-slim
+sudo systemctl enable slim.service
+# cp /etc/skel/.xinitrc ~/    ※1を参照
+# vi ~/.xinitrc
+以下のコメントアウト(#)を外す。
+exec startxfce4
+
+# vi /etc/slim.conf
+以下のコメントアウト(#)を外す。
+daemon yes
+｢current_themes Default｣のところを以下のように編集
+current_theme archlinux-simplyblacknano
+
+・xinitrcの設定(user)
+cp /etc/skel/.xinitrc ~/
+vi ~/.xinitrc
+以下のコメントアウト(#)を外す。
+exec startxfce4
+
+・Fontのインストール
+  ttf-rictyをインストール
+  otf-ipaexfontをインストール (GUI用には評判が良いらしい)
+
+・Font設定変更
+sudo vi /etc/fonts/conf.avail/71-no-embedded-bitmaps.conf
+下記コードを新規入力し保存
+<?xml version="1.0"?>
+<!DOCTYPE fontconfig SYSTEM "fonts.dtd">
+<fontconfig>
+  <match target="font">
+    <edit mode="assign" name="embeddedbitmap">
+      <bool>false</bool>
+    </edit>
+    <edit mode="assign" name="hintstyle">
+       <const>hintnone</const>
+    </edit>
+  </match>
+</fontconfig>
+
+設定を、システム全体に有効にするためのシンボリックリンク
+sudo ln -s /etc/fonts/conf.avail/71-no-embedded-bitmaps.conf /etc/fonts/conf.d/71-no-embedded-bitmaps.conf
+
+・システム全体の表示を日本語に変更
+
+sudo vi /etc/locale.conf
+下記コードに書き換え保存
+LANG=ja_JP.utf8
+LC_NUMERIC=ja_JP.utf8
+LC_TIME=ja_JP.utf8
+LC_MONETARY=ja_JP.utf8
+LC_PAPER=ja_JP.utf8
+LC_MEASUREMENT=ja_JP.utf8
+
+・VirtualBox Guestモジュールをインストール
+sudo pacman -S virtualbox-guest-modules
+sudo pacman -S virtualbox-guest-utils
+
+~/.xinitrcに
+/usr/bin/VBoxClient-all
+を追記(コメントアウトをはずす)
+
+---------------------------
+※1  /etc/skel/.xinitrcについて
+最新だと/etc/ske/以下に.xinitrcが見当たらないので以下の内容を~/.xinitrcとして作成
+
+#!/bin/sh
+#
+# ~/.xinitrc
+#
+# Executed by startx (run your window manager from here)
+
+if [ -d /etc/X11/xinit/xinitrc.d ]; then
+  for f in /etc/X11/xinit/xinitrc.d/*; do
+    [ -x "$f" ] && . "$f"
+  done
+  unset f
+fi
+
+# /usr/bin/VBoxClient-all
+
+# exec gnome-session
+# exec startkde
+exec startxfce4
+# ...or the Window Manager of your choice
+
+■pacman関連
+
+Pacman からの出力は /var/log/pacman.log に記録されている
+
+迅速に .pacnew, .pacsave, .pacorig ファイルを処理する
+  pacman に含まれている pacdiff ツールはこれを補助します。
+  詳しい解説は Pacnew と Pacsave ファイルページを参照してください。 
+
+pacman -Qne
+  install済みのパッケージをリスト表示
+
+pacman -Syu
+  パッケージのアップグレード
+
+pacman -Syy
+  リポジトリデータベースの最新の情報を取得
+
+pacman -S package
+  パッケージのインストール
+
+pacman -Sw package
+  パッケージをインストールせずにダウンロードだけ行う
+
+pacman -U package
+  パッケージファイルからのインストール
+
+pacman -R package
+  パッケージのアンインストール
+
+pacman -Rs package
+  そのパッケージだけが依存している他のパッケージを一緒にアンインストールする
+
+pacman -Ss package
+  リポジトリデータベースを検索して、キーワードにひっかかるパッケージを表示します。
+
+pacman -Si package
+  そのパッケージの詳細情報を表示(リポジトリデータベース)
+
+pacman -Qs package
+  ローカルにインストールしたパッケージを検索
+
+pacman -Qi package
+  ローカルにインストールしたパッケージの詳細を表示
+
+pacman -Ql package
+  ローカルにインストールしたパッケージのファイルを一覧表示
+
+pacman -Qo file
+  そのファイルをインストールしたパッケージを確認するのは
+
+補足
+  expac "%n %p" | grep "S.Arai"
+
+■AURからPackageを作成
+
+・準備
+/etc/makepkg.conf で PACKAGER 変数を設定する
+grep Arai /etc/makepkg.conf
+PACKAGER="S.Arai"
+
+・必要なtool類をインストール
+sudo pacman -S wget
+sudo pacman -S abs    # 不要だが
+sudo pacman -S expac  # あると便利
+sudo pacman -S tree   # あると便利
+
+・PKGBUILDを持ってくる
+https://aur.archlinux.org/
+でパッケージを検索する
+"スナップショットのダウンロード"からtar.gzをダウンロードする
+ダウンロード先例： ~/abs/ など
+
+・PKGBUILDを展開する
+cd ~/abs/
+tar -xvf hoge.tar.gz
+
+・packageを作成する
+makepkg -s
+
+・packageをインストール
+sudo pacman -U hoge.pkg.tar.xz
+
+■その他パッケージインストール
+sudo pacman -S zsh zsh-doc
+sudo pacman -S git
+sudo pacman -S tmux
+sudo pacman -S conky
+sudo pacman -S vim
+
+■設定ファイルなど
+cd ~
+git clone https://github.com/tultarai/dotfiles.git
+
+ln -s dotfiles/.zshrc .zshrc
+ln -s dotfiles/.vimrc .vimrc
+ln -s dotfiles/.conkyrc .conkyrc
+ln -s dotfiles/.tmux.conf .tmux.conf
+
+git clone https://github.com/Shougo/neobundle.vim ~/.vim/bundle/neobundle.vim
+
+vim  →エラーが出るが気にしない
+:NeoBundleUpdate
+:q!
+vim
+
+■xfce関連設定
+・パネル2を削除する
+・キーボードを設定する
+  TypeMatrix EZ-Reach 2030 USB(106 JP)
+・時計を設定する
+  %b%d(%a) %H:%M
+・ターミナルの設定
+  DejaVu Sans Mono Book の 10pointに設定
+  105列 61行に設定
+
