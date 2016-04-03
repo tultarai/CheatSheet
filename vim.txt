@@ -200,3 +200,27 @@ Ctrl+r とreg    レジストリの内容を貼り付け
 :vmap           ショートカットキー表示(ビジュアルモード)
 
 :verbose map    ショートカットキーと定義元ファイルを表示
+
+■Unite (unite.vimが必要)
+
+:Unite source          unite-source一覧を表示
+:Unite output:message  :messageの表示内容を取得
+:Unite output:version  :versionの表示内容を取得
+
+※※※以下は個人的な設定前提※※※
+
+,uu             バッファ一覧 + 最近開いたファイル
+,ua             全部乗せ
+,um             最近開いたファイル
+,ur             レジスタ一覧
+,uf             ファイル一覧
+,ub             バッファ一覧
+,uy             ヒストリ + ヤンク
+
+■色の確認
+
+何色が設定出来るか確認
+:so $VIMRUNTIME/syntax/colortest.vim
+
+現在設定している色の確認
+:so $VIMRUNTIME/syntax/hitest.vim
