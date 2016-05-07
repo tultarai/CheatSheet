@@ -47,7 +47,7 @@ KEYMAP=jp106
 
 ln -s /usr/share/zoneinfo/Asia/Tokyo /etc/localtime
 
-hwclock --systohc --localtime
+hwclock --systohc --utc
 
 echo archlinux > /etc/hostname
 
