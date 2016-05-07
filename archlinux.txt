@@ -97,24 +97,10 @@ sudo pacman -S xfce4 gamin
 --------------------------------------------
 sudo pacman -S xfce4-goodies
 をすると色々入ってしまうので以下のパッケージだけインストールする
-mousepad
-ristretto
-thunar-archive-plugin
-thunar-media-tags-plugin
-xfce4-artwork
-xfce4-cpufreq-plugin
-xfce4-cpugraph-plugin
-xfce4-datetime-plugin
-xfce4-diskperf-plugin
-xfce4-fsguard-plugin
-xfce4-genmon-plugin
-xfce4-screenshooter
-xfce4-systemload-plugin
-xfce4-taskmanager
-xfce4-verve-plugin
-xfce4-weather-plugin
-xfce4-whiskermenu-plugin
-xfce4-xkb-plugin
+sudo pacman -S mousepad ristretto thunar-archive-plugin thunar-media-tags-plugin
+sudo pacman -S xfce4-artwork xfce4-cpufreq-plugin xfce4-cpugraph-plugin xfce4-datetime-plugin xfce4-diskperf-plugin
+sudo pacman -S xfce4-fsguard-plugin xfce4-genmon-plugin xfce4-screenshooter xfce4-systemload-plugin xfce4-taskmanager
+sudo pacman -S xfce4-verve-plugin xfce4-weather-plugin xfce4-whiskermenu-plugin xfce4-xkb-plugin
 --------------------------------------------
 
 ・ディスプレイマネージャのインストールと自動起動の設定(root)
@@ -127,9 +113,9 @@ exec startxfce4
 
 # vi /etc/slim.conf
 以下のコメントアウト(#)を外す。
-daemon yes
-｢current_themes Default｣のところを以下のように編集
-current_theme archlinux-simplyblacknano
+daemon yes  ←やらない方が良いかも
+｢current_themes Default｣のところを以下のように編集  ←やらない方が良いかも
+current_theme archlinux-simplyblacknano  ←やらない方が良いかも
 
 ・xinitrcの設定(user)
 cp /etc/skel/.xinitrc ~/
@@ -311,7 +297,8 @@ vim
 ■xfce関連設定
 ・パネル2を削除する
 ・キーボードを設定する
-  TypeMatrix EZ-Reach 2030 USB(106 JP)
+  キーボードモデル: TypeMatrix EZ-Reach 2030 USB(106 JP)
+  キーボードレイアウト: 日本語 (OADG109A)
 ・時計を設定する
   %b%d(%a) %H:%M
 ・ターミナルの設定
