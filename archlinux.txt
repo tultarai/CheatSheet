@@ -1,4 +1,6 @@
-■VirtualBox環境にインストール
+■■■VirtualBox環境にインストール■■■
+
+■基本部分インストール
 
 loadkeys jp106
 
@@ -103,13 +105,24 @@ sudo pacman -S xfce4-fsguard-plugin xfce4-genmon-plugin xfce4-screenshooter xfce
 sudo pacman -S xfce4-verve-plugin xfce4-weather-plugin xfce4-whiskermenu-plugin xfce4-xkb-plugin
 --------------------------------------------
 
-・ディスプレイマネージャのインストールと自動起動の設定(root)
+■ディスプレイマネージャのインストール
 sudo pacman -S slim slim-themes archlinux-themes-slim
 sudo systemctl enable slim.service
-# cp /etc/skel/.xinitrc ~/    ※1を参照
-# vi ~/.xinitrc
-以下のコメントアウト(#)を外す。
+
+■自動起動の設定(root)
+sudo cp /etc/X11/xinit/xinitrc /root/.xinitrc
+
+sudo vi /root/.xinitrc
+→
+twm &
+xclock -geometry 50x50-1+1 &
+xterm -geometry 80x50+494+51 &
+xterm -geometry 80x20+494-0 &
+exec xterm -geometry 80x66+0+0 -name login
+をコメントアウト
+最後に
 exec startxfce4
+を追加
 
 # vi /etc/slim.conf
 以下のコメントアウト(#)を外す。
@@ -118,16 +131,61 @@ daemon yes  ←やらない方が良いかも
 current_theme archlinux-simplyblacknano  ←やらない方が良いかも
 
 ・xinitrcの設定(user)
-cp /etc/skel/.xinitrc ~/
+cp /etc/X11/xinit/xinitrc ~/.xinitrc
 vi ~/.xinitrc
-以下のコメントアウト(#)を外す。
+→
+twm &
+xclock -geometry 50x50-1+1 &
+xterm -geometry 80x50+494+51 &
+xterm -geometry 80x20+494-0 &
+exec xterm -geometry 80x66+0+0 -name login
+をコメントアウト
+最後に
 exec startxfce4
+を追加
 
-・Fontのインストール
+■VirtualBox Guestモジュールをインストール
+sudo pacman -S virtualbox-guest-modules-arch
+sudo pacman -S virtualbox-guest-utils
+
+■その他パッケージインストール
+sudo pacman -S zsh zsh-doc
+sudo pacman -S git
+sudo pacman -S tmux
+sudo pacman -S conky
+sudo pacman -S gvim
+
+■設定ファイルなど
+cd ~
+git clone https://github.com/tultarai/dotfiles.git
+
+ln -s dotfiles/.zshrc .zshrc
+ln -s dotfiles/.vimrc .vimrc
+ln -s dotfiles/.gvimrc .gvimrc
+ln -s dotfiles/.conkyrc .conkyrc
+ln -s dotfiles/.tmux.conf .tmux.conf
+
+■その他設定
+chsh
+→/bin/zsh
+
+■VIM関連
+git clone https://github.com/Shougo/neobundle.vim ~/.vim/bundle/neobundle.vim
+
+vim  →エラーが出るが気にしない
+:NeoBundleUpdate
+:q!
+vim
+
+■Fontのインストール
+sudo pacman -S otf-ipafont
+
+■Fontのインストール
+  AURでインストールする必要がある
   ttf-rictyをインストール
   otf-ipaexfontをインストール (GUI用には評判が良いらしい)
 
-・Font設定変更
+■Font設定変更
 sudo vi /etc/fonts/conf.avail/71-no-embedded-bitmaps.conf
 下記コードを新規入力し保存
 <?xml version="1.0"?>
@@ -146,7 +204,7 @@ sudo vi /etc/fonts/conf.avail/71-no-embedded-bitmaps.conf
 設定を、システム全体に有効にするためのシンボリックリンク
 sudo ln -s /etc/fonts/conf.avail/71-no-embedded-bitmaps.conf /etc/fonts/conf.d/71-no-embedded-bitmaps.conf
 
-・システム全体の表示を日本語に変更
+■システム全体の表示を日本語に変更
 
 sudo vi /etc/locale.conf
 下記コードに書き換え保存
@@ -157,37 +215,7 @@ LC_MONETARY=ja_JP.utf8
 LC_PAPER=ja_JP.utf8
 LC_MEASUREMENT=ja_JP.utf8
 
-・VirtualBox Guestモジュールをインストール
-sudo pacman -S virtualbox-guest-modules
-sudo pacman -S virtualbox-guest-utils
-
-~/.xinitrcに
-/usr/bin/VBoxClient-all
-を追記(コメントアウトをはずす)
-
 ---------------------------
-※1  /etc/skel/.xinitrcについて
-最新だと/etc/ske/以下に.xinitrcが見当たらないので以下の内容を~/.xinitrcとして作成
-
-#!/bin/sh
-#
-# ~/.xinitrc
-#
-# Executed by startx (run your window manager from here)
-
-if [ -d /etc/X11/xinit/xinitrc.d ]; then
-  for f in /etc/X11/xinit/xinitrc.d/*; do
-    [ -x "$f" ] && . "$f"
-  done
-  unset f
-fi
-
-# /usr/bin/VBoxClient-all
-
-# exec gnome-session
-# exec startkde
-exec startxfce4
-# ...or the Window Manager of your choice
 
 ■pacman関連
 
@@ -271,29 +299,6 @@ makepkg -s
 ・packageをインストール
 sudo pacman -U hoge.pkg.tar.xz
 
-■その他パッケージインストール
-sudo pacman -S zsh zsh-doc
-sudo pacman -S git
-sudo pacman -S tmux
-sudo pacman -S conky
-sudo pacman -S vim
-
-■設定ファイルなど
-cd ~
-git clone https://github.com/tultarai/dotfiles.git
-
-ln -s dotfiles/.zshrc .zshrc
-ln -s dotfiles/.vimrc .vimrc
-ln -s dotfiles/.conkyrc .conkyrc
-ln -s dotfiles/.tmux.conf .tmux.conf
-
-git clone https://github.com/Shougo/neobundle.vim ~/.vim/bundle/neobundle.vim
-
-vim  →エラーが出るが気にしない
-:NeoBundleUpdate
-:q!
-vim
-
 ■xfce関連設定
 ・パネル2を削除する
 ・キーボードを設定する
@@ -304,4 +309,4 @@ vim
 ・ターミナルの設定
   DejaVu Sans Mono Book の 10pointに設定
   105列 61行に設定
-
+・Whisker Menuをパネルに追加
